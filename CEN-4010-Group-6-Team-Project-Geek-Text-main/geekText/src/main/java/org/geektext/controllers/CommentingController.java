@@ -1,4 +1,4 @@
-package org.geektext.controllers;
+package org.geektext.controller;
 import org.geektext.model.CommentedBook;
 //import org.geektext.services.CommentedService;
 import org.geektext.services.CommentedService;

@@ -1,4 +1,4 @@
-package org.geektext.controllers;
+package org.geektext.controller;
 import org.geektext.model.RatedBook;
 import org.geektext.services.RatingService;
 import org.springframework.beans.factory.annotation.Autowired;

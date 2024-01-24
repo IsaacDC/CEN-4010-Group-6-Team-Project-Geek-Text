@@ -34,6 +34,11 @@ public class UserService implements UserRepository {
     }
 
     @Override
+    public int getUserIdByUsername(String username) {
+        return 0;
+    }
+
+    @Override
     public User selectUserByUsername(String username) {
         try{
             String str = "SELECT * FROM users WHERE username = ?";

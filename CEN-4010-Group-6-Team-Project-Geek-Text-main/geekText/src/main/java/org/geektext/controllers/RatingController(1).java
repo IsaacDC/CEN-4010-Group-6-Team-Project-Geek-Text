@@ -1,4 +1,4 @@
-package org.geektext.controllers;
+package org.geektext.controller;
 import org.geektext.model.RatedBook;
 //import org.geektext.model.SavedBook;
 import org.geektext.services.RatingService;
