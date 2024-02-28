@@ -65,4 +65,9 @@ public class UserService implements UserRepository {
         return jdbcTemplate.update("UPDATE users SET address=?, fullname=?, password=? WHERE username=?",
                 updatedUser.getAddress(), updatedUser.getFullname(), updatedUser.getPassword(), username);
     }
+
+    @Override
+    public User findUserById(int userID) {
+        return null;
+    }
 }

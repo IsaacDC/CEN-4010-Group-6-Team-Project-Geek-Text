@@ -19,7 +19,7 @@ public class RatingService {
     @Autowired
     UserRepository userRepo;
 
-    public void ratedBook(long bookID, long userID, int bookRating) {
+    public void ratedBook(int bookID, int userID, int bookRating) {
 
 
         Book rated = bookRepo.findBookById(bookID);

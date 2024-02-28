@@ -3,76 +3,36 @@ package org.geektext.model;
 import jakarta.persistence.*;
 
 
-@Entity
-@Table(name = "authors")
 public class Author {
 
-    public Author(){}
+    private int id;
+    private String firstName;
+    private String lastName;
+    private String bio;
+    private String publisher;
+    public Author(int id, String firstName, String lastName, String bio, String publisher) {
 
-    public Author(String firstName, String lastName, String bio, String publisher) {
-
-        this.setFirstName(firstName);
-        this.setLastName(lastName);
-        this.setBio(bio);
-        this.setPublisher(publisher);
+        this.id = id;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.bio = bio;
+        this.publisher = publisher;
 
     }
-
-
-    @Id
-    @Column (name = "authorID")
-    @GeneratedValue(strategy = GenerationType.IDENTITY) // auto generates incremental ID value
-    private long id;
-
-
-    @Column(name = "firstName")
-    private String firstName;
-    @Column(name = "lastName")
-    private String lastName;
-
-    @Column(name = "biography", nullable = false)
-    private String bio;
-
-    @Column(name = "publisher")
-    private String publisher;
-
-
-
-
-    // Get+Set Methods
-
     public long getId() {return id;}
     public String getFirstName() {
         return firstName;
     }
-
-    public void setFirstName(String firstName) {
-        this.firstName = firstName;
-    }
-
     public String getLastName() {
         return lastName;
     }
-
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
-    }
-
     public String getBio() {
         return bio;
     }
-
-    public void setBio(String bio) {
-        this.bio = bio;
-    }
-
     public String getPublisher() {
         return publisher;
     }
 
-    public void setPublisher(String publisher) {
-        this.publisher = publisher;
-    }
 }
 
 

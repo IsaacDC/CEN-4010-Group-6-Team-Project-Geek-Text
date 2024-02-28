@@ -18,12 +18,12 @@ public class RatedBook {
     @Id
     @Column (name = "ratingnumber")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private int id;
     @Column(name = "bookID")
-    private long bookID;
+    private int bookID;
 
     @Column(name = "userID")
-    private long userID;
+    private int userID;
 
     @Column(name = "bookRating")
     private int bookRating;
@@ -32,21 +32,21 @@ public class RatedBook {
     @Column(name = "datestamp")
     private Date datestamp;
 
-    public long getId() {
+    public int getId() {
         return id;
     }
 
-    public long getUserID() {
+    public int getUserID() {
         return userID;
     }
-    public void setUserID(long userID) {
+    public void setUserID(int userID) {
         this.setUserID(userID);
     }
 
-    public long getBookID() {
+    public int getBookID() {
         return bookID;
     }
-    public void setBookID(long bookID) {
+    public void setBookID(int bookID) {
         this.bookID = bookID;
     }
 

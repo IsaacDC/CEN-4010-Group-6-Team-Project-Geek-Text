@@ -3,7 +3,6 @@ import jakarta.persistence.*;
 
 
 @Entity
-@Table(name = "savedbooks")
 public class SavedBook {
     // Represents Books user's have saved to shopping cart
 
@@ -25,13 +24,13 @@ public class SavedBook {
     @Id
     @Column (name = "itemnumber")
     @GeneratedValue(strategy = GenerationType.IDENTITY) // auto generates incremental ID value
-    private long id;
+    private int id;
 
     @Column(name = "bookID")
-    private long bookID;
+    private int bookID;
 
     @Column(name = "owner")
-    private long userID;
+    private int userID;
 
     @Column(name = "quantity")
     private int qty;
@@ -41,25 +40,25 @@ public class SavedBook {
 
 
     // Get+Set Methods
-    public long getUserID() {
+    public int getUserID() {
         return userID;
     }
 
 
-    public long getId() {
+    public int getId() {
         return id;
     }
 
-    public void setUserID(long userID) {
+    public void setUserID(int userID) {
         this.setUserID(userID);
     }
 
 
-    public long getBookID() {
+    public int getBookID() {
         return bookID;
     }
 
-    public void setBookID(long bookID) {
+    public void setBookID(int bookID) {
         this.bookID = bookID;
     }
 

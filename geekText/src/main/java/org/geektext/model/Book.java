@@ -1,24 +1,13 @@
 package org.geektext.model;
 
 import jakarta.persistence.*;
-
-
-@Entity
-@Table(name = "books")
 public class Book {
-
-    public Book() {} // default constructor
 
     public Book(String title, String author, String genre, String description, int yearPublished,int copiesSold, int isbn, double price) {
 
-        this.setTitle(title);
-        this.setAuthor(author);
-        this.setGenre(genre);
-        this.setDescription(description);
-        this.setYearPublished(yearPublished);
-        this.setCopiesSold(copiesSold);
-        this.setIsbn(isbn);
-        this.setPrice(price);
+        this.title = title;
+        this.author = author;
+        this.
 
     }
 
