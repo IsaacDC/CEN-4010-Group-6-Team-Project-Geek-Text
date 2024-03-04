@@ -22,7 +22,7 @@ public class UserController {
         this.userRepo = userRepo;
     }
 
-    @PostMapping("/adduser")
+    @PostMapping("/user/add")
     public ResponseEntity<String> addUser(@RequestBody User user) {
         try {
             userRepo.insertUser(new User(user.getId(), user.getAddress(), user.getFullname(), user.getPassword(), user.getUsername()));
@@ -33,7 +33,7 @@ public class UserController {
         }
     }
 
-    @GetMapping("/getusers")
+    @GetMapping("/user/list")
     public ResponseEntity<List<User>> getAllUsers(@RequestParam(required = false) String username) {
         try {
 

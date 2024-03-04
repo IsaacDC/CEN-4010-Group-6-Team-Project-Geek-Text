@@ -18,14 +18,14 @@ public class AuthorController {
     AuthorRepository authorRepo;
 
     @Autowired
-    public AuthorController(AuthorService authorService) {
-        this.authorService = authorService;
+    public AuthorController(AuthorRepository authorRepo) {
+        this.authorRepo = authorRepo;
     }
 
     @PostMapping("/authors/add")
     public ResponseEntity<String> addAuthor(@RequestBody Author author) {
         try {
-            authorService.addAuthor(author);
+            authorRepo.addAuthor(new Author(author.getFirstName(), author.getLastName(), author.getBio(), author.getPublisher(), author.getId()));
             return new ResponseEntity<>("Author Loaded to Database", HttpStatus.CREATED);
         }catch(Exception e){
             return new ResponseEntity<>("Something went wrong", HttpStatus.INTERNAL_SERVER_ERROR);
@@ -33,7 +33,7 @@ public class AuthorController {
     }
 
 
-        @GetMapping("/authors/show")
+    @GetMapping("/authors/list")
     public ResponseEntity<List<Author>> showAuthors() {
         List<Author> authors = authorService.getAllAuthors();
         if (authors.isEmpty()) {

@@ -11,12 +11,22 @@ import java.util.List;
 
 
 @Repository
-public interface AuthorRepository extends JpaRepository<Author, Long>{
+public interface AuthorRepository{
+
+        void addAuthor(Author author);
+
+        List<Author> listAllAuthors();
+
+        int getAuthorIdByName(String firstName, String lastName);
+
+        Author selectAuthorByName(String firstName, String lastName);
+        int deleteAuthorById(int id);
+
+        int updateAuthor(int id, Author author);
+
+        Author findAuthorById(int auhtorId);
 
 
-//
-//    @Query("SELECT b FROM Book b WHERE b.id = :authorId")
-//    List<Book> findBooksByAuthorId(@Param("authorId") Long authorId);
 }
 
 

@@ -10,7 +10,7 @@ public class Author {
     private String lastName;
     private String bio;
     private String publisher;
-    public Author(int id, String firstName, String lastName, String bio, String publisher) {
+    public Author(String firstName, String lastName, String bio, String publisher, int id) {
 
         this.id = id;
         this.firstName = firstName;
@@ -19,7 +19,7 @@ public class Author {
         this.publisher = publisher;
 
     }
-    public long getId() {return id;}
+    public int getId() {return id;}
     public String getFirstName() {
         return firstName;
     }
