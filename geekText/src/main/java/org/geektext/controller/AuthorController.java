@@ -1,6 +1,7 @@
 package org.geektext.controller;
 
 import org.geektext.model.Author;
+import org.geektext.repository.AuthorRepository;
 import org.geektext.service.AuthorService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -9,10 +10,12 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 
+@RequestMapping("/api")
 @RestController
 public class AuthorController {
 
-    private final AuthorService authorService;
+    @Autowired
+    AuthorRepository authorRepo;
 
     @Autowired
     public AuthorController(AuthorService authorService) {
