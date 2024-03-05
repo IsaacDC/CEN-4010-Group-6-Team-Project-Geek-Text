@@ -33,6 +33,8 @@ public class Author {
         return publisher;
     }
 
+    public void setFirstName(String firstName) {
+    }
 }
 
 

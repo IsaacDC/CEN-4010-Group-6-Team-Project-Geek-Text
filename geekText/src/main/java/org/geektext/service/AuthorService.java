@@ -24,7 +24,7 @@ public class AuthorService implements AuthorRepository{
                 author.getFirstName(), author.getLastName(), author.getBio(), author.getPublisher(), author.getId());
     }
 
-    public List<Author> selectAllAuthors(){
+    public List<Author> listAllAuthors(){
         return jdbcTemplate.query("SELECT * FROM authordata", (rs, rosNum) ->
                 new Author(rs.getString("firstname"),
                             rs.getString("lastname"),
