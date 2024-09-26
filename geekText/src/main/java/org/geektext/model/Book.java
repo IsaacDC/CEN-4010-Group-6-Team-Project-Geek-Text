@@ -1,19 +1,42 @@
 package org.geektext.model;
 
 import jakarta.persistence.*;
+
+@Entity
+@Table(name = "books")
 public class Book {
 
+    @Id
+    @Column(name = "isbn", nullable = false)
+    private long isbn;
 
+    @Column(name = "title", nullable = false)
     private String title;
-    private String author;
+
+    @ManyToOne
+    @JoinColumn(name = "author_id")
+    private Author author;
+
+    @Column(name = "genre")
     private String genre;
+
+    @Column(name = "description", length = 2000)
     private String description;
+
+    @Column(name = "year_published")
     private int yearPublished;
+
+    @Column(name = "copies_sold")
     private int copiesSold;
-    private int isbn;
+
+    @Column(name = "price")
     private double price;
 
-    public Book(String title, String author, String genre, String description, int yearPublished,int copiesSold, int isbn, double price) {
+    public Book() {
+    }
+
+    public Book(String title, Author author, String genre, String description, int yearPublished, int copiesSold,
+            long isbn, double price) {
 
         this.title = title;
         this.author = author;
@@ -25,11 +48,12 @@ public class Book {
         this.price = price;
 
     }
+
     public String getTitle() {
         return title;
     }
 
-    public String getAuthor() {
+    public Author getAuthor() {
         return author;
     }
 
@@ -49,9 +73,10 @@ public class Book {
         return yearPublished;
     }
 
-    public int getIsbn() {
+    public long getIsbn() {
         return isbn;
     }
+
     public int getCopiesSold() {
         return copiesSold;
     }

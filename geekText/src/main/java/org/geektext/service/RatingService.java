@@ -1,4 +1,5 @@
 package org.geektext.service;
+
 import org.geektext.model.*;
 import org.geektext.repository.BookRepository;
 import org.geektext.repository.RatedBookRepository;
@@ -8,6 +9,7 @@ import org.springframework.stereotype.Service;
 import java.util.Date;
 
 import java.util.List;
+
 @Service
 public class RatingService {
     @Autowired
@@ -19,25 +21,25 @@ public class RatingService {
     @Autowired
     UserRepository userRepo;
 
-    public void ratedBook(int bookID, int userID, int bookRating) {
+    public void ratedBook(long bookIsbn, int userID, int bookRating) {
 
-
-        Book rated = bookRepo.findBookById(bookID);
+        Book rated = bookRepo.findBookByIsbn(bookIsbn);
         User userTarget = userRepo.findUserById(userID);
-        //int rate = ratedBookRepo.findRatedBooksByBookID(bookRating);
+        // int rate = ratedBookRepo.findRatedBooksByBookIsbn(bookRating);
 
-        RatedBook ratedBook = new RatedBook(rated,userTarget,bookRating,new Date());
+        RatedBook ratedBook = new RatedBook(rated, userTarget, bookRating, new Date());
         ratedBookRepo.save(ratedBook);
 
     }
-    public List<RatedBook> ShowBookRatings(long bookID) {
-        List<RatedBook> ratedBooks =  ratedBookRepo.findRatedBooksByBookID(bookID);
+
+    public List<RatedBook> ShowBookRatings(long bookIsbn) {
+        List<RatedBook> ratedBooks = ratedBookRepo.findRatedBooksByBookIsbn(bookIsbn);
 
         return ratedBooks;
     }
 
-    public double calculateAverageRating(long bookId) {
-        List<RatedBook> ratedBooks = ratedBookRepo.findRatedBooksByBookID(bookId);
+    public double calculateAverageRating(long bookIsbn) {
+        List<RatedBook> ratedBooks = ratedBookRepo.findRatedBooksByBookIsbn(bookIsbn);
 
         if (ratedBooks.isEmpty()) {
             return 0.0;

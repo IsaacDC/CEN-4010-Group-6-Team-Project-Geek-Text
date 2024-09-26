@@ -1,7 +1,6 @@
 package org.geektext.controller;
 
 import org.geektext.model.Author;
-import org.geektext.model.User;
 import org.geektext.repository.AuthorRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -11,7 +10,6 @@ import org.springframework.web.bind.annotation.*;
 import java.util.ArrayList;
 import java.util.List;
 
-
 @RequestMapping("/api")
 @RestController
 public class AuthorController {
@@ -19,7 +17,6 @@ public class AuthorController {
     @Autowired
     AuthorRepository authorRepo;
 
-    @Autowired
     public AuthorController(AuthorRepository authorRepo) {
         this.authorRepo = authorRepo;
     }
@@ -27,38 +24,39 @@ public class AuthorController {
     @PostMapping("/authors/add")
     public ResponseEntity<String> addAuthor(@RequestBody Author author) {
         try {
-            authorRepo.addAuthor(new Author(author.getFirstName(), author.getLastName(), author.getBio(), author.getPublisher(), author.getId()));
+            authorRepo.addAuthor(new Author(author.getFirstName(), author.getLastName(), author.getBio(),
+                    author.getPublisher(), author.getId()));
             return new ResponseEntity<>("Author Loaded to Database", HttpStatus.CREATED);
-        }catch(Exception e){
+        } catch (Exception e) {
             return new ResponseEntity<>("Something went wrong", HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
-
     @GetMapping("/authors/list")
     public ResponseEntity<List<Author>> showAuthors(@RequestParam(required = false) String lastName) {
-        try{
+        try {
             List<Author> authors = new ArrayList<>();
 
-            if (lastName != null){
+            if (lastName != null) {
                 authors.addAll(authorRepo.listAllAuthors());
-                return  new ResponseEntity<>(HttpStatus.OK);
+                return new ResponseEntity<>(HttpStatus.OK);
             }
 
             authors.addAll(authorRepo.listAllAuthors());
 
-            if (authors.isEmpty()) return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+            if (authors.isEmpty())
+                return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 
             return new ResponseEntity<>(authors, HttpStatus.OK);
 
-        }catch (Exception e){
+        } catch (Exception e) {
             System.out.println(e);
-            return  new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
     @GetMapping("/{lastname}")
-    public ResponseEntity selectAuthorByName (@PathVariable("lastname") String firstname, String lastname) {
+    public ResponseEntity<Author> selectAuthorByName(@PathVariable("lastname") String firstname, String lastname) {
         Author author = authorRepo.selectAuthorByName(firstname, lastname);
 
         if (author != null) {
@@ -68,12 +66,11 @@ public class AuthorController {
         }
     }
 
-    @DeleteMapping("/delete{id}")
-    public ResponseEntity deleteUserById(@PathVariable("id") int id) {
+    @DeleteMapping("/delete/{id}")
+    public ResponseEntity<String> deleteUserById(@PathVariable("id") int id) {
         try {
             authorRepo.deleteAuthorById(id);
             return new ResponseEntity<>("Author was deleted successfully", HttpStatus.OK);
-
         } catch (Exception e) {
             System.out.println(e);
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
@@ -81,17 +78,18 @@ public class AuthorController {
     }
 
     @PutMapping("/{lastname}/update")
-    public ResponseEntity<String> updateUser(@PathVariable("lastname") String lastname, String firstname,
-                                             @RequestBody Author updatedAuthor) {
+    public ResponseEntity<String> updateUser(@PathVariable String lastname, String firstname,
+            @RequestBody Author updatedAuthor) {
         try {
             Author author = authorRepo.selectAuthorByName(firstname, lastname);
             if (author != null) {
                 if (updatedAuthor.getFirstName() != null) {
                     author.setFirstName(updatedAuthor.getFirstName());
                 }
-                if (updatedAuthor.getFirstName() != null){
+                if (updatedAuthor.getFirstName() != null) {
 
                 }
+                int id = 0;
                 int rowsUpdated = authorRepo.updateAuthor(id, author);
                 if (rowsUpdated > 0) {
                     return new ResponseEntity<>("User was updated successfully", HttpStatus.OK);
@@ -107,7 +105,3 @@ public class AuthorController {
     }
 
 }
-
-
-
-

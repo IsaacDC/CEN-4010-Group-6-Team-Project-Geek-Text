@@ -1,16 +1,23 @@
 package org.geektext.model;
-import jakarta.persistence.*;
 
+import jakarta.persistence.*;
 
 @Entity
 public class SavedBook {
     // Represents Books user's have saved to shopping cart
+    private double price;
+    @Id
+    private int id;
+    private long bookID;
+    private int userID;
+    private int qty;
 
-    public SavedBook(){}; // default constructor
+    public SavedBook() {
+    }; // default constructor
 
     public SavedBook(Book book, User user) {
 
-        this.bookID = book.getId();
+        this.bookID = book.getIsbn();
         this.userID = user.getId();
         this.id = getId();
         this.price = book.getPrice();
@@ -18,32 +25,10 @@ public class SavedBook {
 
     }
 
-
-    private double price;
-
-    @Id
-    @Column (name = "itemnumber")
-    @GeneratedValue(strategy = GenerationType.IDENTITY) // auto generates incremental ID value
-    private int id;
-
-    @Column(name = "bookID")
-    private int bookID;
-
-    @Column(name = "owner")
-    private int userID;
-
-    @Column(name = "quantity")
-    private int qty;
-
-
-
-
-
     // Get+Set Methods
     public int getUserID() {
         return userID;
     }
-
 
     public int getId() {
         return id;
@@ -53,8 +38,7 @@ public class SavedBook {
         this.setUserID(userID);
     }
 
-
-    public int getBookID() {
+    public long getBookID() {
         return bookID;
     }
 

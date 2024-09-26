@@ -1,15 +1,20 @@
 package org.geektext.model;
 
-import jakarta.persistence.OneToOne;
+import jakarta.persistence.*;
 
+@Entity
 public class CreditCard {
 
-    private final long cardNumber;
-    private final int cvv;
-    private final int expDate;
+    @Id
+    private long cardNumber;
+    private int cvv;
+    private int expDate;
 
     @OneToOne
+    @JoinColumn(name = "user_id")
     private User user;
+
+    public CreditCard(){}
 
     public CreditCard(long cardNumber, int cvv, int expDate, User user) {
         this.user = user;
@@ -18,10 +23,11 @@ public class CreditCard {
         this.expDate = expDate;
     }
 
-    public User getUser(){
+    public User getUser() {
         return user;
     }
-    public void setUser(User user){
+
+    public void setUser(User user) {
         this.user = user;
     }
 

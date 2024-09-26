@@ -14,31 +14,31 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 public class CreditCardController {
 
-   @Autowired
-   CreditCardRepository creditCardRepo;
-   @Autowired
-   UserService userService;
-
     @Autowired
-    public CreditCardController(CreditCardService creditCardService, UserService userService){
+    CreditCardRepository creditCardRepo;
+    @Autowired
+    UserService userService;
+
+    public CreditCardController(CreditCardService creditCardService, UserService userService) {
         this.userService = userService;
         this.creditCardRepo = creditCardService;
     }
 
     @PostMapping("/{username}/addcreditcard")
-    public ResponseEntity<String> insertCreditCard(@PathVariable("username") String username, @RequestBody CreditCard card){
-        try{
+    public ResponseEntity<String> insertCreditCard(@PathVariable String username,
+            @RequestBody CreditCard card) {
+        try {
 
-            User user = userService.selectUserByUsername(username);
+            User user = userService.findUserByUsername(username);
 
-            if (user == null){
+            if (user == null) {
                 return new ResponseEntity<>("User not found", HttpStatus.NOT_FOUND);
             }
 
             card.setUser(user);
             creditCardRepo.insertCard(new CreditCard(card.getCardNumber(), card.getCvv(), card.getExpDate(), user));
             return ResponseEntity.status(HttpStatus.CREATED).body("CreditCard was created successfully");
-        }catch (Exception e){
+        } catch (Exception e) {
             System.out.println(e);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
         }

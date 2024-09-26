@@ -1,18 +1,16 @@
 
 package org.geektext.repository;
 
-import org.geektext.model.Book;
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.stereotype.Repository;
-
 import java.util.List;
 
-@Repository
-public interface BookRepository extends JpaRepository<Book, Long> {
-     Book findByIsbn(int isbn);
+import org.geektext.model.Author;
+import org.geektext.model.Book;
 
-     Book findBookById(long bookID);
+public interface BookRepository {
+    void addBook(Book book);
 
-//     List<Book> getBookByAuthor(long authorId);
+    Book findBookByIsbn(long isbn);
+
+    List<Book> findAllByAuthor(Author author);
 
 }

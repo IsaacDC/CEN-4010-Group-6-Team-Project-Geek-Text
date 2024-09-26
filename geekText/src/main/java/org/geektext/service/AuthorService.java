@@ -42,12 +42,12 @@ public class AuthorService implements AuthorRepository{
     public Author selectAuthorByName(String firstName, String lastName){
         try{
             String str = "SELECT * FROM authordata WHERE firstname = ? AND lastname = ?";
-            return jdbcTemplate.queryForObject(str, new Object[]{firstName, lastName}, (rs, rosNum) ->
+            return jdbcTemplate.queryForObject(str, (rs, rosNum) ->
                     new Author(rs.getString("firstname"),
                                 rs.getString("lastname"),
                                 rs.getString("biography"),
                                 rs.getString("publisher"),
-                                rs.getInt("authorid")));
+                                rs.getInt("authorid")), new Object[]{firstName, lastName});
         } catch (IncorrectResultSizeDataAccessException e){
             return null;
         }

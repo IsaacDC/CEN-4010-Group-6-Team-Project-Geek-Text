@@ -14,7 +14,6 @@ import java.util.List;
 @Service
 public class ShoppingCartService {
 
-
     @Autowired
     SavedBookRepository savedBookRepo;
 
@@ -24,58 +23,51 @@ public class ShoppingCartService {
     @Autowired
     UserRepository userRepo;
 
-
-
-
-    public int addToCart(int bookID, int userID) {
+    public int addToCart(long bookID, int userID) {
         // Searches for book and user then creates new
         // "SavedBook" item to save to cart table.
         // Returns 0 if Book is not found
 
-
-
-        Book addedBook = bookRepo.findBookById(bookID);
+        Book addedBook = bookRepo.findBookByIsbn(bookID);
         if (addedBook == null) {
             return 0;
         }
 
         User userTarget = userRepo.findUserById(userID);
-        SavedBook newBook = new SavedBook(addedBook,userTarget);
+        SavedBook newBook = new SavedBook(addedBook, userTarget);
         savedBookRepo.save(newBook);
         return 1;
 
     }
 
-    public double CalcSubtotal(long userID) {
+    public double CalcSubtotal(int userID) {
         // Retrieves list of books in user's cart, loop & sum
 
-        List<SavedBook> bookList =  savedBookRepo.findSavedBooksByUserID(userID);
+        List<SavedBook> bookList = savedBookRepo.findSavedBooksByUserID(userID);
         double bookPrice;
         SavedBook currBook;
         double subtotal = 0; // reset
 
-
         for (int i = 0; i < bookList.size(); i++) {
 
-                currBook = bookList.get(i); // CHECK CAST*
-                bookPrice = currBook.getPrice();
-                subtotal += bookPrice;
+            currBook = bookList.get(i); // CHECK CAST*
+            bookPrice = currBook.getPrice();
+            subtotal += bookPrice;
 
         }
 
         return subtotal;
     }
 
-    public List<SavedBook> ShowCartItems(long userID) {
+    public List<SavedBook> ShowCartItems(int userID) {
         // Returns all books in users shopping cart
 
-
-        List<SavedBook> savedBooks =  savedBookRepo.findSavedBooksByUserID(userID);
+        List<SavedBook> savedBooks = savedBookRepo.findSavedBooksByUserID(userID);
 
         return savedBooks;
     }
 
-    public int removeFromCart( long bookID,long userID){
+    public int removeFromCart(long bookID, int userID) {
         // Removes specified book from cart
         // Returns 1 if successful, else returns 0
 
@@ -98,7 +90,7 @@ public class ShoppingCartService {
         return 1;
     }
 
-    public void clearCart(long userID) {
+    public void clearCart(int userID) {
         // Clears all books from specified user's cart
         List<SavedBook> bookList = savedBookRepo.findSavedBooksByUserID(userID);
         SavedBook targetBook2;
@@ -109,8 +101,5 @@ public class ShoppingCartService {
             savedBookRepo.delete(targetBook2);
         }
     }
-
-
-
 
 }

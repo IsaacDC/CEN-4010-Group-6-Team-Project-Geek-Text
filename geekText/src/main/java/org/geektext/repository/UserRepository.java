@@ -1,19 +1,16 @@
 package org.geektext.repository;
 
 import org.geektext.model.User;
-
 import java.util.List;
 
 public interface UserRepository {
-
       void insertUser(User user);
 
-      List<User> selectAllUsers();
+      List<User> findAllUsers();
 
-      int getUserIdByUsername(String username);
+      int findUserIdByUsername(String username);
 
-      User selectUserByUsername(String username);
-
+      User findUserByUsername(String username);
 
       int deleteUserById(int id);
 

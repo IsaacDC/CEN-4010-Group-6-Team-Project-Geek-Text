@@ -1,6 +1,5 @@
 package org.geektext.controller;
 
-
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -8,16 +7,12 @@ import org.springframework.web.bind.annotation.RestController;
 public class PledgeController {
     // Help Messages for accessing REST API functions
 
-
     private String helpOptions = "'/help/database', '/help/shoppingCart'";
     private String shoppingCartOptions = "'/help/shoppingCart/addBook', '/help/shoppingCart/removeBook'";
     private String databaseOptions = "'/loadUsers','/loadBooks','/loadAuthors','/showUsers','/showBooks','/showAuthors'";
     private String shoppingCartAdd = "Add Book by user/book ID ---   '/{userID}/cart/addBook/{bookID}'  ";
     private String shoppingCartRemove = "Remove Book by user/book ID --- '/{userID}/cart/remove/{bookID}";
     private String shoppingCartClear = "Remove all Books in user's cart --- /{userID}/cart/remove/all";
-
-
-
 
     @GetMapping("/")
     public String homeMsg() {
@@ -53,9 +48,5 @@ public class PledgeController {
     public String shoppingCartClear() {
         return shoppingCartClear;
     }
-
-
-
-
 
 }

@@ -1,6 +1,5 @@
 package org.geektext.controller;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.geektext.repository.UserRepository;
@@ -17,7 +16,6 @@ public class UserController {
     @Autowired
     UserRepository userRepo;
 
-    @Autowired
     public UserController(UserRepository userRepo) {
         this.userRepo = userRepo;
     }
@@ -25,7 +23,8 @@ public class UserController {
     @PostMapping("/user/add")
     public ResponseEntity<String> addUser(@RequestBody User user) {
         try {
-            userRepo.insertUser(new User(user.getId(), user.getAddress(), user.getFullname(), user.getPassword(), user.getUsername()));
+            userRepo.insertUser(new User(user.getId(), user.getAddress(), user.getFullname(), user.getPassword(),
+                    user.getUsername()));
             return new ResponseEntity<>("User was created successfully", HttpStatus.CREATED);
         } catch (Exception e) {
             System.out.println(e);
@@ -37,16 +36,10 @@ public class UserController {
     public ResponseEntity<List<User>> getAllUsers(@RequestParam(required = false) String username) {
         try {
 
-            List<User> users = new ArrayList<>();
+            List<User> users = userRepo.findAllUsers();
 
-            if (username != null) {
-                users.addAll(userRepo.selectAllUsers());
-                return new ResponseEntity<>(HttpStatus.OK);
-            }
-
-            users.addAll(userRepo.selectAllUsers());
-
-            if (users.isEmpty()) return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+            if (users.isEmpty())
+                return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 
             return new ResponseEntity<>(users, HttpStatus.OK);
 
@@ -57,8 +50,8 @@ public class UserController {
     }
 
     @GetMapping("/{username}")
-    public ResponseEntity getUserByUsername(@PathVariable("username") String username) {
-        User user = userRepo.selectUserByUsername(username);
+    public ResponseEntity<User> getUserByUsername(@PathVariable String username) {
+        User user = userRepo.findUserByUsername(username);
 
         if (user != null) {
             return new ResponseEntity<>(user, HttpStatus.OK);
@@ -68,7 +61,7 @@ public class UserController {
     }
 
     @DeleteMapping("/delete{id}")
-    public ResponseEntity deleteUserById(@PathVariable("id") int id) {
+    public ResponseEntity<String> deleteUserById(@PathVariable int id) {
         try {
             userRepo.deleteUserById(id);
             return new ResponseEntity<>("User was deleted successfully", HttpStatus.OK);
@@ -80,10 +73,10 @@ public class UserController {
     }
 
     @PutMapping("/{username}/update")
-    public ResponseEntity<String> updateUser(@PathVariable("username") String username,
-                                             @RequestBody User updatedUser) {
+    public ResponseEntity<String> updateUser(@PathVariable String username,
+            @RequestBody User updatedUser) {
         try {
-            User user = userRepo.selectUserByUsername(username);
+            User user = userRepo.findUserByUsername(username);
             if (user != null) {
                 if (updatedUser.getAddress() != null) {
                     user.setAddress(updatedUser.getAddress());
