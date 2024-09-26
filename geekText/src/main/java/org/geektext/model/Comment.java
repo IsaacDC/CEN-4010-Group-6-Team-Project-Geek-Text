@@ -9,8 +9,11 @@ public class Comment {
 
     @Id
     private long bookIsbn;
+    @Column(name = "user_id", nullable = false)
     private int userId;
+    @Column(name = "comment", nullable = false)
     private String comment;
+    @Column(name = "date_time", nullable = false)
     private LocalDateTime dateTime;
 
     public Comment() {

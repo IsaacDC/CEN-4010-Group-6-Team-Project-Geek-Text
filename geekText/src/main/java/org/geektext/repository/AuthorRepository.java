@@ -1,9 +1,11 @@
 package org.geektext.repository;
 
 import org.geektext.model.Author;
+import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
+@Repository
 public interface AuthorRepository {
 
         void addAuthor(Author author);

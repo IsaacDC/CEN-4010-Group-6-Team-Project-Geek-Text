@@ -5,13 +5,19 @@ import java.util.Set;
 import jakarta.persistence.*;
 
 @Entity
+@Table(name = "authors")
 public class Author {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private int authorId;
+
+    @Column(name = "first_name", nullable = false)
     private String firstName;
+    @Column(name = "last_name", nullable = false)
     private String lastName;
+    @Column(name = "bio", length = 2000)
     private String bio;
+    @Column(name = "publisher", nullable = false)
     private String publisher;
 
     @OneToMany(mappedBy = "author")
@@ -20,9 +26,9 @@ public class Author {
     public Author() {
     }
 
-    public Author(String firstName, String lastName, String bio, String publisher, int id) {
+    public Author(String firstName, String lastName, String bio, String publisher, int authorId) {
 
-        this.id = id;
+        this.authorId = authorId;
         this.firstName = firstName;
         this.lastName = lastName;
         this.bio = bio;
@@ -31,7 +37,7 @@ public class Author {
     }
 
     public int getId() {
-        return id;
+        return authorId;
     }
 
     public String getFirstName() {

@@ -17,13 +17,13 @@ public class UserService implements UserRepository {
     private JdbcTemplate jdbcTemplate;
 
     public void insertUser(User user) {
-        jdbcTemplate.update("INSERT INTO users (userID, address, fullname, password, username) VALUES (?,?,?,?,?)",
+        jdbcTemplate.update("INSERT INTO users (id, address, fullname, password, username) VALUES (?,?,?,?,?)",
                 user.getId(), user.getAddress(), user.getFullname(), user.getPassword(), user.getUsername());
     }
 
     public List<User> findAllUsers() {
 
-        return jdbcTemplate.query("SELECT * FROM users", (rs, rosNum) -> new User(rs.getInt("userID"),
+        return jdbcTemplate.query("SELECT * FROM users", (rs, rosNum) -> new User(rs.getInt("id"),
                 rs.getString("address"),
                 rs.getString("fullname"),
                 rs.getString("password"),
@@ -34,7 +34,7 @@ public class UserService implements UserRepository {
     public User findUserByUsername(String username) {
         try {
             String str = "SELECT * FROM users WHERE username = ?";
-            return jdbcTemplate.queryForObject(str, (rs, rosNum) -> new User(rs.getInt("userID"),
+            return jdbcTemplate.queryForObject(str, (rs, rosNum) -> new User(rs.getInt("id"),
                     rs.getString("address"),
                     rs.getString("fullname"),
                     rs.getString("password"),
@@ -46,25 +46,14 @@ public class UserService implements UserRepository {
 
     @Override
     public int deleteUserById(int id) {
-        return jdbcTemplate.update("DELETE FROM users WHERE userID=?", id);
+        return jdbcTemplate.update("DELETE FROM users WHERE id=?", id);
     }
 
     @Transactional
     @Override
     public int updateUser(String username, User updatedUser) {
-        return jdbcTemplate.update("UPDATE users SET address=?, fullname=?, password=? WHERE username=?",
+        return jdbcTemplate.update("UPDATE user SET address=?, fullname=?, password=? WHERE username=?",
                 updatedUser.getAddress(), updatedUser.getFullname(), updatedUser.getPassword(), username);
     }
 
-    @Override
-    public int findUserIdByUsername(String username) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'findUserIdByUsername'");
-    }
-
-    @Override
-    public User findUserById(int userID) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'findUserById'");
-    }
 }

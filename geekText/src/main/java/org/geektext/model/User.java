@@ -3,14 +3,19 @@ package org.geektext.model;
 import jakarta.persistence.*;
 
 @Entity
+@Table(name = "users")
 public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
+    @Column(name = "address", nullable = false)
     private String address;
+    @Column(name = "fullname", nullable = false)
     private String fullname;
+    @Column(name = "password", nullable = false)
     private String password;
+    @Column(name = "username", nullable = false, unique = true)
     private String username;
 
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)

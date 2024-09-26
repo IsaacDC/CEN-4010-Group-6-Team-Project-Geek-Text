@@ -18,10 +18,10 @@ public class BookService implements BookRepository {
 
     public void addBook(Book book) {
         jdbcTemplate.update(
-                "INSERT INTO books (title, authorId, genre, description, year_published, copies_sold, isbn, price) VALUES (?,?,?,?,?,?,?,?)",
-                book.getTitle(), book.getAuthor().getId(), book.getGenre(), book.getDescription(),
-                book.getYearPublished(),
-                book.getCopiesSold(), book.getIsbn(), book.getPrice());
+                "INSERT INTO books (isbn, copies_sold, description, genre, price, title, year_published, author_id) VALUES (?,?,?,?,?,?,?,?)",
+                book.getIsbn(), book.getCopiesSold(), book.getDescription(), book.getGenre(),
+                book.getPrice(),
+                book.getTitle(), book.getYearPublished(), book.getAuthor().getId());
     }
 
     @Override
@@ -35,7 +35,7 @@ public class BookService implements BookRepository {
                 Author author = authorService.findAuthorById(authorId);
 
                 return new Book(
-                        rs.getString("title"),
+                        rs.getString("isbn"),
                         author,
                         rs.getString("genre"),
                         rs.getString("description"),
@@ -51,7 +51,7 @@ public class BookService implements BookRepository {
 
     @Override
     public List<Book> findAllByAuthor(Author author) {
-        String str = "SELECT * FROM books WHERE author =?";
+        String str = "SELECT * FROM books WHERE author_id =?";
         return jdbcTemplate.query(str, (rs, rowNum) -> new Book(rs.getString("title"),
                 author,
                 rs.getString("genre"),
