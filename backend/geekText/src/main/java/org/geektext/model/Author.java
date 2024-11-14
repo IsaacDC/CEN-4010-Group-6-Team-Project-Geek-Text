@@ -1,5 +1,6 @@
 package org.geektext.model;
 
+import java.util.HashSet;
 import java.util.Set;
 
 import jakarta.persistence.*;
@@ -21,14 +22,13 @@ public class Author {
     private String publisher;
 
     @OneToMany(mappedBy = "author")
-    private Set<Book> books;
+    private Set<Book> books = new HashSet<>();
 
     public Author() {
     }
 
-    public Author(String firstName, String lastName, String bio, String publisher, int authorId) {
+    public Author(String firstName, String lastName, String bio, String publisher) {
 
-        this.authorId = authorId;
         this.firstName = firstName;
         this.lastName = lastName;
         this.bio = bio;
@@ -56,6 +56,20 @@ public class Author {
         return publisher;
     }
 
-    public void setFirstName(String firstName) {
+    public Set<Book> getBooks() {
+        return books;
     }
+
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
+
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
+    }
+
+    public void setBio(String bio) {
+        this.bio = bio;
+    }
+
 }

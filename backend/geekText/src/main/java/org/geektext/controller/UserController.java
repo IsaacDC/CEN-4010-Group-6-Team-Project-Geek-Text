@@ -16,19 +16,15 @@ public class UserController {
     @Autowired
     UserRepository userRepo;
 
-    public UserController(UserRepository userRepo) {
-        this.userRepo = userRepo;
-    }
-
     @PostMapping("/user/add")
-    public ResponseEntity<String> addUser(@RequestBody User user) {
+    public ResponseEntity<Void> addUser(@RequestBody User user) {
         try {
             userRepo.insertUser(new User(user.getId(), user.getAddress(), user.getFullname(), user.getPassword(),
                     user.getUsername()));
-            return new ResponseEntity<>("User was created successfully", HttpStatus.CREATED);
+            return new ResponseEntity<>(HttpStatus.CREATED);
         } catch (Exception e) {
             System.out.println(e);
-            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -61,10 +57,10 @@ public class UserController {
     }
 
     @DeleteMapping("/delete{id}")
-    public ResponseEntity<String> deleteUserById(@PathVariable int id) {
+    public ResponseEntity<Void> deleteUserById(@PathVariable int id) {
         try {
             userRepo.deleteUserById(id);
-            return new ResponseEntity<>("User was deleted successfully", HttpStatus.OK);
+            return new ResponseEntity<>(HttpStatus.OK);
 
         } catch (Exception e) {
             System.out.println(e);
@@ -73,7 +69,7 @@ public class UserController {
     }
 
     @PutMapping("/{username}/update")
-    public ResponseEntity<String> updateUser(@PathVariable String username,
+    public ResponseEntity<Void> updateUser(@PathVariable String username,
             @RequestBody User updatedUser) {
         try {
             User user = userRepo.findUserByUsername(username);
@@ -90,15 +86,15 @@ public class UserController {
 
                 int rowsUpdated = userRepo.updateUser(username, user);
                 if (rowsUpdated > 0) {
-                    return new ResponseEntity<>("User was updated successfully", HttpStatus.OK);
+                    return new ResponseEntity<>(HttpStatus.OK);
                 } else {
-                    return new ResponseEntity<>("Failed to update user", HttpStatus.INTERNAL_SERVER_ERROR);
+                    return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
                 }
             }
-            return new ResponseEntity<>("User not found", HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         } catch (Exception e) {
             System.out.println(e);
-            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 }

@@ -9,7 +9,7 @@ public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
-    @Column(name = "address", nullable = false)
+    @Column(name = "address", nullable = true)
     private String address;
     @Column(name = "fullname", nullable = false)
     private String fullname;
@@ -21,7 +21,8 @@ public class User {
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
     private CreditCard creditCard;
 
-    public User(){}
+    public User() {
+    }
 
     public User(int id, String address, String fullname, String password, String username) {
         this.id = id;

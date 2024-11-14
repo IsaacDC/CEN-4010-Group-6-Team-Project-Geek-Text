@@ -25,7 +25,7 @@ public class AuthorController {
     public ResponseEntity<String> addAuthor(@RequestBody Author author) {
         try {
             authorRepo.addAuthor(new Author(author.getFirstName(), author.getLastName(), author.getBio(),
-                    author.getPublisher(), author.getId()));
+                    author.getPublisher()));
             return new ResponseEntity<>("Author Loaded to Database", HttpStatus.CREATED);
         } catch (Exception e) {
             return new ResponseEntity<>("Something went wrong", HttpStatus.INTERNAL_SERVER_ERROR);
@@ -78,7 +78,7 @@ public class AuthorController {
     }
 
     @PutMapping("/{lastname}/update")
-    public ResponseEntity<String> updateUser(@PathVariable String lastname, String firstname,
+    public ResponseEntity<String> updateAuthor(@PathVariable String lastname, String firstname,
             @RequestBody Author updatedAuthor) {
         try {
             Author author = authorRepo.selectAuthorByName(firstname, lastname);
@@ -86,18 +86,21 @@ public class AuthorController {
                 if (updatedAuthor.getFirstName() != null) {
                     author.setFirstName(updatedAuthor.getFirstName());
                 }
-                if (updatedAuthor.getFirstName() != null) {
-
+                if (updatedAuthor.getLastName() != null) {
+                    author.setLastName(updatedAuthor.getLastName());
                 }
-                int id = 0;
+                if (updatedAuthor.getBio() != null) {
+                    author.setBio(updatedAuthor.getBio());
+                }
+                int id = author.getId();
                 int rowsUpdated = authorRepo.updateAuthor(id, author);
                 if (rowsUpdated > 0) {
-                    return new ResponseEntity<>("User was updated successfully", HttpStatus.OK);
+                    return new ResponseEntity<>("Author was updated successfully", HttpStatus.OK);
                 } else {
                     return new ResponseEntity<>("Failed to update user", HttpStatus.INTERNAL_SERVER_ERROR);
                 }
             }
-            return new ResponseEntity<>("User not found", HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>("Author not found", HttpStatus.NOT_FOUND);
         } catch (Exception e) {
             System.out.println(e);
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);

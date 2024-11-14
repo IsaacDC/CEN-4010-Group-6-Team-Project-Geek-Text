@@ -11,7 +11,9 @@ import org.springframework.stereotype.Repository;
 public interface BookRepository {
     void addBook(Book book);
 
-    Book findBookByIsbn(long isbn);
+    List<Book> getAllBooks();
+
+    Book getBookByIsbn(long isbn);
 
     List<Book> findAllByAuthor(Author author);
 
