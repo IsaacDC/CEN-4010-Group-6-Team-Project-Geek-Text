@@ -5,6 +5,7 @@ import org.geektext.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.IncorrectResultSizeDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -15,14 +16,17 @@ public class UserService implements UserRepository {
 
     @Autowired
     private JdbcTemplate jdbcTemplate;
+    
+    private BCryptPasswordEncoder encoder = new BCryptPasswordEncoder(12);
 
     public void insertUser(User user) {
+        String hashedPassword = encoder.encode(user.getPassword());
+        user.setPassword(hashedPassword);
         jdbcTemplate.update("INSERT INTO users (id, address, fullname, password, username) VALUES (?,?,?,?,?)",
                 user.getId(), user.getAddress(), user.getFullname(), user.getPassword(), user.getUsername());
     }
 
     public List<User> findAllUsers() {
-
         return jdbcTemplate.query("SELECT * FROM users", (rs, rosNum) -> new User(rs.getInt("id"),
                 rs.getString("address"),
                 rs.getString("fullname"),
@@ -54,6 +58,14 @@ public class UserService implements UserRepository {
     public int updateUser(String username, User updatedUser) {
         return jdbcTemplate.update("UPDATE user SET address=?, fullname=?, password=? WHERE username=?",
                 updatedUser.getAddress(), updatedUser.getFullname(), updatedUser.getPassword(), username);
+    }
+
+    @Override
+    public boolean verifyUser(String username, String password) {
+        String sql = "SELECT password FROM user WHERE username = ?";
+        String storedPassword = jdbcTemplate.queryForObject(sql, String.class, username);
+        
+        return encoder.matches(password, storedPassword);
     }
 
 }

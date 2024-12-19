@@ -7,6 +7,9 @@ import java.util.List;
 
 @Repository
 public interface UserRepository {
+
+      boolean verifyUser(String username, String password);
+
       void insertUser(User user);
 
       List<User> findAllUsers();

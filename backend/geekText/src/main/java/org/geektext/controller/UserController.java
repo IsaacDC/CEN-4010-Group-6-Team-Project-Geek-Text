@@ -28,6 +28,17 @@ public class UserController {
         }
     }
 
+    @PostMapping("/verify")
+    public ResponseEntity<String> verifyUser(@RequestParam String username, @RequestParam String password) {
+        boolean isPasswordCorrect = userRepo.verifyUser(username, password);
+
+        if (isPasswordCorrect) {
+            return new ResponseEntity<>("login successful", HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>("invalid username or password", HttpStatus.UNAUTHORIZED);
+        }
+    }
+
     @GetMapping("/user/list")
     public ResponseEntity<List<User>> getAllUsers(@RequestParam(required = false) String username) {
         try {
