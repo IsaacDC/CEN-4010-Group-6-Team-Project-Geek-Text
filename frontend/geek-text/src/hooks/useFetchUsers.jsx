@@ -1,6 +1,9 @@
 import { useState, useEffect } from "react";
 
-const useUsers = (url) => {
+const endpoint = "http://localhost:8080/api/user/list";
+
+
+const useUsers = () => {
   const [users, setUsers] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -9,7 +12,7 @@ const useUsers = (url) => {
     const fetchData = async () => {
       try {
         setIsLoading(true);
-        const response = await fetch(url);
+        const response = await fetch(endpoint);
 
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
@@ -24,7 +27,7 @@ const useUsers = (url) => {
       }
     };
     fetchData();
-  }, [url]);
+  }, [endpoint]);
 
   return { users, isLoading, error };
 };

@@ -3,8 +3,6 @@ import { useParams } from "react-router-dom";
 import useBook from "../hooks/useBook";
 import Header from "./Header/Header";
 
-const API = "http://localhost:8080/api/book/";
-
 export default function BookDetails() {
   const { isbn } = useParams();
   const { book, loading, error } = useBook(`${API}${isbn}`);

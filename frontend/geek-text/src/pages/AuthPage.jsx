@@ -1,8 +1,11 @@
 import React, { useState } from "react";
-import LogInCard from "./LogInCard";
-import SignUpCard from "./SignUpCard";
+import { useSearchParams } from "react-router-dom";
+import LogInCard from "../components/UserAuth/LogInCard";
+import SignUpCard from "../components/UserAuth/SignUpCard";
 const AuthPage = () => {
-  const [isLogIn, setIsLogIn] = useState(true);
+  const [searchParams] = useSearchParams();
+  const mode = searchParams.get("mode") === "signup" ? false : true;
+  const [isLogIn, setIsLogIn] = useState(mode);
   const toggleAuthMode = () => {
     setIsLogIn((prev) => !prev);
   };

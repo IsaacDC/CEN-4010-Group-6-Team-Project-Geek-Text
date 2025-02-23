@@ -18,7 +18,7 @@ const Nav = () => {
     <>
       <nav className="flex gap-5 justify-end">
         <div className="hidden md:flex justify-between">
-          <NavLink to="/signup">Signup</NavLink>
+          <NavLink to="/?mode=signup">Signup</NavLink>
         </div>
         <div>
           <FontAwesomeIcon icon={faCartShopping} />

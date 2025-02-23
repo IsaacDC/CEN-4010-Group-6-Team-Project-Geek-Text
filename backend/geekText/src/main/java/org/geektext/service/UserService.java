@@ -3,6 +3,7 @@ package org.geektext.service;
 import org.geektext.model.User;
 import org.geektext.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.dao.IncorrectResultSizeDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -16,7 +17,7 @@ public class UserService implements UserRepository {
 
     @Autowired
     private JdbcTemplate jdbcTemplate;
-    
+
     private BCryptPasswordEncoder encoder = new BCryptPasswordEncoder(12);
 
     public void insertUser(User user) {
@@ -24,6 +25,22 @@ public class UserService implements UserRepository {
         user.setPassword(hashedPassword);
         jdbcTemplate.update("INSERT INTO users (id, address, fullname, password, username) VALUES (?,?,?,?,?)",
                 user.getId(), user.getAddress(), user.getFullname(), user.getPassword(), user.getUsername());
+    }
+
+    @Override
+    public boolean verifyUser(String username, String password) {
+        String sql = "SELECT password FROM users WHERE username = ?";
+
+        try {
+            String storedPassword = jdbcTemplate.queryForObject(sql, String.class, username);
+
+            return encoder.matches(password, storedPassword);
+
+        } catch (EmptyResultDataAccessException e) {
+            System.out.println("User not found" + e);
+            return false;
+        }
+
     }
 
     public List<User> findAllUsers() {
@@ -56,16 +73,8 @@ public class UserService implements UserRepository {
     @Transactional
     @Override
     public int updateUser(String username, User updatedUser) {
-        return jdbcTemplate.update("UPDATE user SET address=?, fullname=?, password=? WHERE username=?",
+        return jdbcTemplate.update("UPDATE users SET address=?, fullname=?, password=? WHERE username=?",
                 updatedUser.getAddress(), updatedUser.getFullname(), updatedUser.getPassword(), username);
-    }
-
-    @Override
-    public boolean verifyUser(String username, String password) {
-        String sql = "SELECT password FROM user WHERE username = ?";
-        String storedPassword = jdbcTemplate.queryForObject(sql, String.class, username);
-        
-        return encoder.matches(password, storedPassword);
     }
 
 }

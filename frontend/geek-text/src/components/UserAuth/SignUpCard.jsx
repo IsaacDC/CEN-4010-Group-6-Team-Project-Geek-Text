@@ -1,18 +1,17 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import useCreateUser from "../../hooks/useCreateUser";
+import useUser from "../../hooks/useUser";
 import FormInput from "./FormInput";
 
 export default function SignUpCard({ toggleAuthMode }) {
   const [formData, setFormData] = useState({
     fullname: "",
     username: "",
-    email: "",
     address: "",
     password: "",
   });
 
-  const { authenticate, loading, error } = useCreateUser();
+  const { authenticate, loading, error } = useUser();
   const navigate = useNavigate();
 
   const handleChange = (e) => {
@@ -24,17 +23,18 @@ export default function SignUpCard({ toggleAuthMode }) {
   };
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
     const endpoint = "http://localhost:8080/api/user/add";
+
+    e.preventDefault();
     try {
-      const { success, data } = await authenticate(endpoint, formData);
+      const { success, data, error } = await authenticate(endpoint, formData);
       if (success) {
         navigate("/home");
       } else {
-        console.error("Error add user", data.error);
+        console.error("No Success Adding User", error);
       }
     } catch (err) {
-      console.error("Error adding user", err);
+      console.error("Error Adding User", err);
     }
   };
 
@@ -67,15 +67,6 @@ export default function SignUpCard({ toggleAuthMode }) {
             placeholder="johndoe123"
           />
           <FormInput
-            htmlFor="email"
-            header="Email"
-            inputType="text"
-            inputName="email"
-            value={formData.email}
-            onChange={handleChange}
-            placeholder="johndoe@example.com"
-          />
-          <FormInput
             htmlFor="address"
             header="Address"
             inputType="text"
@@ -83,6 +74,15 @@ export default function SignUpCard({ toggleAuthMode }) {
             value={formData.address}
             onChange={handleChange}
             placeholder="123 Main St, Anytown, USA"
+          />
+          <FormInput
+            htmlFor="password"
+            header="Password"
+            inputType="password"
+            inputName="password"
+            value={formData.password}
+            onChange={handleChange}
+            placeholder="Password"
           />
 
           <button
@@ -96,7 +96,7 @@ export default function SignUpCard({ toggleAuthMode }) {
           >
             {loading ? "Signing up..." : "Sign Up"}
           </button>
-          {error && <p style={{ color: "red" }}>Try Again</p>}
+          {error && <p style={{ color: "red" }}>{error}</p>}
         </form>
         <div>
           <p className="text-sm">

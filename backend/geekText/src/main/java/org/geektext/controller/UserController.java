@@ -1,5 +1,7 @@
 package org.geektext.controller;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.List;
 
 import org.geektext.repository.UserRepository;
@@ -17,26 +19,27 @@ public class UserController {
     UserRepository userRepo;
 
     @PostMapping("/user/add")
-    public ResponseEntity<Void> addUser(@RequestBody User user) {
-        try {
-            userRepo.insertUser(new User(user.getId(), user.getAddress(), user.getFullname(), user.getPassword(),
-                    user.getUsername()));
-            return new ResponseEntity<>(HttpStatus.CREATED);
-        } catch (Exception e) {
-            System.out.println(e);
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+    public ResponseEntity<Map<String, String>> addUser(@RequestBody User user) {
+        userRepo.insertUser(new User(user.getId(), user.getAddress(), user.getFullname(), user.getPassword(),
+                user.getUsername()));
+
+        Map<String, String> response = new HashMap<String, String>();
+        response.put("message", "USER CREATED SUCCESSFULLY");
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
-    @PostMapping("/verify")
-    public ResponseEntity<String> verifyUser(@RequestParam String username, @RequestParam String password) {
+    @PostMapping("/user/verify")
+    public ResponseEntity<Map<String, Object>> verifyUser(@RequestBody Map<String, String> credentials) {
+        String username = credentials.get("username");
+        String password = credentials.get("password");
+
         boolean isPasswordCorrect = userRepo.verifyUser(username, password);
 
-        if (isPasswordCorrect) {
-            return new ResponseEntity<>("login successful", HttpStatus.OK);
-        } else {
-            return new ResponseEntity<>("invalid username or password", HttpStatus.UNAUTHORIZED);
-        }
+        Map<String, Object> response = new HashMap<>();
+        response.put("verification success", isPasswordCorrect);
+        response.put("message", isPasswordCorrect ? "Login successful" : "Invalid username or password");
+
+        return ResponseEntity.status(isPasswordCorrect ? HttpStatus.OK : HttpStatus.UNAUTHORIZED).body(response);
     }
 
     @GetMapping("/user/list")

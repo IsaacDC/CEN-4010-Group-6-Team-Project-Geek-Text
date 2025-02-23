@@ -1,5 +1,6 @@
 package org.geektext.controller;
 
+import java.util.Collections;
 import java.util.List;
 
 import org.geektext.model.Book;
@@ -20,7 +21,7 @@ public class BookController {
     public ResponseEntity<String> addBook(@RequestBody Book book) {
         try {
             bookRepo.addBook(book);
-            return new ResponseEntity<>("Book Loaded to Database", HttpStatus.CREATED);
+            return ResponseEntity.status(HttpStatus.CREATED).body("Book Loaded to Database");
         } catch (Exception e) {
             return new ResponseEntity<>("Something went wrong", HttpStatus.INTERNAL_SERVER_ERROR);
         }
@@ -31,9 +32,9 @@ public class BookController {
         Book book = bookRepo.getBookByIsbn(isbn);
 
         if (book != null) {
-            return new ResponseEntity<>(book, HttpStatus.OK);
+            return ResponseEntity.ok(book);
         } else {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
         }
     }
 
@@ -43,13 +44,13 @@ public class BookController {
             List<Book> books = bookRepo.getAllBooks();
 
             if (books.isEmpty())
-                return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+                return ResponseEntity.ok(Collections.emptyList());
 
-            return new ResponseEntity<>(books, HttpStatus.OK);
+            return ResponseEntity.ok(books);
 
         } catch (Exception e) {
             System.out.println(e);
-            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
         }
     }
 

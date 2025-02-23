@@ -1,10 +1,9 @@
 import React from "react";
-import useUsers from "../hooks/useUsers";
+import useUsers from "../hooks/useFetchUsers";
 
-const API = "http://localhost:8080/api/user/list";
 
 export default function Users() {
-  const { users, loading, error } = useUsers(API);
+  const { users, loading, error } = useUsers();
 
   if (loading) return <div>Loading...</div>;
   if (error) return <div>Error: {error.message}</div>;

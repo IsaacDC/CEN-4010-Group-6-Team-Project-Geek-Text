@@ -1,17 +1,14 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import useCreateUser from "../../hooks/useCreateUser";
+import useUser from "../../hooks/useUser";
 import FormInput from "./FormInput";
 
 export default function LogInCard({ toggleAuthMode }) {
   const [formData, setFormData] = useState({
-    fullname: "",
     username: "",
-    email: "",
-    address: "",
     password: "",
   });
-  const { authenticate, loading, error } = useCreateUser();
+  const { authenticate, loading, error } = useUser();
   const navigate = useNavigate();
 
   const handleChange = (e) => {
@@ -24,16 +21,18 @@ export default function LogInCard({ toggleAuthMode }) {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const endpoint = "http://localhost:8080/api/user/add";
-    try {
-      const { success, data } = await authenticate(endpoint, formData);
-      if (success) {
-        navigate("/home");
+    const endpoint = "http://localhost:8080/api/user/verify";
+    const { success, data, status } = await authenticate(endpoint, formData);
+    if (success) {
+      navigate("/home");
+    } else {
+      if (status === 401) {
+        setErrorMessage("Invalid username or password.");
+      } else if (status === 500) {
+        setErrorMessage("Server error. Please try again later.");
       } else {
-        console.error("Error add user", data.error);
+        setErrorMessage(`Unexpected error (${status}). Please try again.`);
       }
-    } catch (err) {
-      console.error("Error adding user", err);
     }
   };
 
@@ -48,13 +47,13 @@ export default function LogInCard({ toggleAuthMode }) {
         </h1>
         <form className="space-y-4 md:space-y-6" onSubmit={handleSubmit}>
           <FormInput
-            htmlFor="email"
-            header="Email"
+            htmlFor="username"
+            header="Username"
             inputType="text"
-            inputName="email"
-            value={formData.email}
+            inputName="username"
+            value={formData.username}
             onChange={handleChange}
-            placeholder="johndoe@example.com"
+            placeholder="johndoe123"
           />
           <FormInput
             htmlFor="password"
