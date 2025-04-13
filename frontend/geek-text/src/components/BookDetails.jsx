@@ -1,11 +1,11 @@
 import React from "react";
 import { useParams } from "react-router-dom";
-import useBook from "../hooks/useBook";
+import fetchBookDetails from "../hooks/fetchBookDetails";
 import Header from "./Header/Header";
 
 export default function BookDetails() {
   const { isbn } = useParams();
-  const { book, loading, error } = useBook(`${API}${isbn}`);
+  const { book, loading, error } = fetchBookDetails(isbn);
 
   if (loading) return <div>Loading...</div>;
   if (error) return <div>Error: {error.message}</div>;

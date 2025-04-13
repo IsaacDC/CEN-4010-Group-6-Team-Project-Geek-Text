@@ -27,7 +27,7 @@ export default function SignUpCard({ toggleAuthMode }) {
 
     e.preventDefault();
     try {
-      const { success, data, error } = await authenticate(endpoint, formData);
+      const { success, error } = await authenticate(endpoint, formData);
       if (success) {
         navigate("/home");
       } else {

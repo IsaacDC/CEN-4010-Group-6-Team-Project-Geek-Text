@@ -3,7 +3,7 @@ import { useState, useEffect } from "react";
 const endpoint = "http://localhost:8080/api/book/";
 
 
-const useBook = () => {
+const fetchBookDetails = (isbn) => {
   const [book, setBook] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -12,7 +12,7 @@ const useBook = () => {
     const fetchData = async () => {
       try {
         setIsLoading(true);
-        const response = await fetch(endpoint);
+        const response = await fetch(endpoint , isbn);
 
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
@@ -32,4 +32,4 @@ const useBook = () => {
   return { book, isLoading, error };
 };
 
-export default useBook;
+export default fetchBookDetails;

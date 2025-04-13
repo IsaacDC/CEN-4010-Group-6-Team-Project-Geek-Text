@@ -1,12 +1,10 @@
 import React from "react";
 import Header from "../components/Header/Header";
 import BookCard from "../components/BookCard";
-import useBooks from "../hooks/useBooks";
-
+import fetchBooks from "../hooks/fetchBooks";
 
 export default function Home() {
-  
-  const { books, loading, error } = useBooks();
+  const { books, loading, error } = fetchBooks();
 
   if (loading) return <div>Loading...</div>;
   if (error) return <div>Error: {error.message}</div>;

@@ -4,6 +4,7 @@ import Home from "./pages/Home";
 import Users from "./components/Users";
 import BookDetails from "./components/BookDetails";
 import AuthPage from "./pages/AuthPage";
+import { CreateBook } from "./pages/CreateBook";
 
 function App() {
   return (
@@ -12,6 +13,7 @@ function App() {
         <Route path="/" element={<AuthPage />} />
         <Route path="/home" element={<Home />} />
         <Route path="/users" element={<Users />} />
+        <Route path="/addbook" element={<CreateBook />} />
         <Route path="/book/:isbn" element={<BookDetails />} />
       </Routes>
     </Router>
