@@ -1,7 +1,7 @@
 import React from "react";
 import { useParams } from "react-router-dom";
-import fetchBookDetails from "../hooks/fetchBookDetails";
-import Header from "./Header/Header";
+import fetchBookDetails from "../../hooks/fetchBookDetails";
+import Header from "../Header/Header";
 
 export default function BookDetails() {
   const { isbn } = useParams();

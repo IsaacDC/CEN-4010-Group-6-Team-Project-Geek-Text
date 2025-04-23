@@ -1,5 +1,5 @@
 import React from "react";
-import useUsers from "../hooks/useFetchUsers";
+import useUsers from "../../hooks/useFetchUsers";
 
 
 export default function Users() {

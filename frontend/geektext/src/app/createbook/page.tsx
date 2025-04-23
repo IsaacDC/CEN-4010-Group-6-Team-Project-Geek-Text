@@ -1,39 +1,71 @@
-import React from "react";
-import FormInput from "../components/UserAuth/FormInput";
-import useCreateBook from "../hooks/useCreateBook";
+"use client";
 
-export const CreateBook = () => {
-  const [formData, setFormData] = React.useState({
+import FormInput from "../ui/FormInput";
+import { useState } from "react";
+
+type FormData = {
+  title: string;
+  author: string;
+  genre: string;
+  description: string;
+  yearPublished: Number;
+  isbn: Number;
+  price: Number;
+};
+
+export default function CreateBook() {
+  const [formData, setFormData] = useState<FormData>({
     title: "",
     author: "",
     genre: "",
     description: "",
-    yearPublished: "",
-    isbn: "",
-    price: "",
+    yearPublished: 0,
+    isbn: 0,
+    price: 0,
   });
 
-  const { createBook, loading, error } = useCreateBook();
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
-  const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    setLoading(true);
+    setError(null);
+
     try {
-      const { success, error } = await createBook(formData);
-      if (success) {
-        alert("Book added successfully!");
-      } else {
-        console.error("Error creating book", error);
-        alert("No success creating book");
+      const response = await fetch("http://localhost:8080/api/books/create", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formData),
+      });
+      if (!response.ok) {
+        throw new Error(`Failed to create book: ${response.status}`);
       }
-    } catch (error) {
-      console.error("Error creating book", error);
+      alert("Book created successfully!");
+      setFormData({
+        title: "",
+        author: "",
+        genre: "",
+        description: "",
+        yearPublished: 0,
+        isbn: 0,
+        price: 0,
+      });
+    } catch (err: any) {
+      console.error(err.message || "Something went wrong");
       alert("Error creating book");
+    } finally {
+      setLoading(false);
     }
   };
+
   return (
     <div className="flex flex-col items-center justify-center px-6 py-8 mx-auto md:h-screen lg:py-0">
       <div className="w-full rounded-lg shadow md:mt-0 sm:max-w-md xl:p-0 bg-white">
@@ -116,11 +148,11 @@ export const CreateBook = () => {
               backgroundColor: "var(--dark-green)",
             }}
           >
-            {loading ? "Signing up..." : "Sign Up"}
+            Enter
           </button>
           {error && <p style={{ color: "red" }}>{error}</p>}
         </form>
       </div>
     </div>
   );
-};
+}

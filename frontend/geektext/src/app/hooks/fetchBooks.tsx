@@ -1,11 +1,19 @@
 import { useState, useEffect } from "react";
 
-const endpoint = "http://localhost:8080/api/books/all"
+type Book = {
+  id: number;
+  title: string;
+  author: string;
+  description: string;
+  isbn: number;
+};
+
+const endpoint = "http://localhost:8080/api/books/all";
 
 const useBooks = () => {
-  const [books, setBooks] = useState([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const [books, setBooks] = useState<Book[]>([]);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -17,16 +25,16 @@ const useBooks = () => {
           throw new Error(`HTTP error! status: ${response.status}`);
         }
 
-        const jsonData = await response.json();
+        const jsonData: Book[] = await response.json();
         setBooks(jsonData);
-      } catch (error) {
-        setError(error.message);
+      } catch (err: any) {
+        setError(err.message);
       } finally {
         setIsLoading(false);
       }
     };
     fetchData();
-  }, [endpoint]);
+  }, []);
 
   return { books, isLoading, error };
 };
