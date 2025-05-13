@@ -7,10 +7,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.List;
 
-@RequestMapping("/api")
+@RequestMapping("/api/author")
 @RestController
 public class AuthorController {
 
@@ -21,90 +20,73 @@ public class AuthorController {
         this.authorRepo = authorRepo;
     }
 
-    @PostMapping("/authors/add")
-    public ResponseEntity<String> addAuthor(@RequestBody Author author) {
-        try {
-            authorRepo.addAuthor(new Author(author.getFirstName(), author.getLastName(), author.getBio(),
-                    author.getPublisher()));
-            return new ResponseEntity<>("Author Loaded to Database", HttpStatus.CREATED);
-        } catch (Exception e) {
-            return new ResponseEntity<>("Something went wrong", HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+    @PostMapping("/add")
+    public ResponseEntity<Author> addAuthor(@RequestBody Author author) {
+        Author createdAuthor = authorRepo.addAuthor(author);
+
+        return ResponseEntity.status(HttpStatus.CREATED).body(createdAuthor);
     }
 
-    @GetMapping("/authors/list")
-    public ResponseEntity<List<Author>> showAuthors(@RequestParam(required = false) String lastName) {
-        try {
-            List<Author> authors = new ArrayList<>();
+    @GetMapping("/list")
+    public ResponseEntity<List<Author>> showAuthors() {
+        List<Author> authors = authorRepo.listAllAuthors();
 
-            if (lastName != null) {
-                authors.addAll(authorRepo.listAllAuthors());
-                return new ResponseEntity<>(HttpStatus.OK);
-            }
+        if (authors.isEmpty())
+            return ResponseEntity.noContent().build();
 
-            authors.addAll(authorRepo.listAllAuthors());
+        return ResponseEntity.ok(authors);
 
-            if (authors.isEmpty())
-                return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-
-            return new ResponseEntity<>(authors, HttpStatus.OK);
-
-        } catch (Exception e) {
-            System.out.println(e);
-            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
-        }
     }
 
-    @GetMapping("/{lastname}")
-    public ResponseEntity<Author> selectAuthorByName(@PathVariable("lastname") String firstname, String lastname) {
-        Author author = authorRepo.selectAuthorByName(firstname, lastname);
+    @GetMapping("/{firstname}/{lastname}")
+    public ResponseEntity<Author> findAuthorByName(@PathVariable("firstname") String firstname,
+            @PathVariable("lastname") String lastname) {
+        Author author = authorRepo.findAuthorByName(firstname, lastname);
 
         if (author != null) {
-            return new ResponseEntity<>(author, HttpStatus.OK);
+            return ResponseEntity.ok().body(author);
         } else {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            return ResponseEntity.notFound().build();
         }
     }
 
     @DeleteMapping("/delete/{id}")
-    public ResponseEntity<String> deleteUserById(@PathVariable("id") int id) {
-        try {
-            authorRepo.deleteAuthorById(id);
-            return new ResponseEntity<>("Author was deleted successfully", HttpStatus.OK);
-        } catch (Exception e) {
-            System.out.println(e);
-            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+    public ResponseEntity<Void> deleteUserById(@PathVariable("id") int id) {
+        authorRepo.deleteAuthorById(id);
+        return ResponseEntity.ok().build();
+
     }
 
-    @PutMapping("/{lastname}/update")
-    public ResponseEntity<String> updateAuthor(@PathVariable String lastname, String firstname,
+    @PutMapping("/update/{firstname}/{lastname}")
+    public ResponseEntity<Author> updateAuthor(@PathVariable("firstname") String firstname,
+            @PathVariable("lastname") String lastname,
             @RequestBody Author updatedAuthor) {
-        try {
-            Author author = authorRepo.selectAuthorByName(firstname, lastname);
-            if (author != null) {
-                if (updatedAuthor.getFirstName() != null) {
-                    author.setFirstName(updatedAuthor.getFirstName());
-                }
-                if (updatedAuthor.getLastName() != null) {
-                    author.setLastName(updatedAuthor.getLastName());
-                }
-                if (updatedAuthor.getBio() != null) {
-                    author.setBio(updatedAuthor.getBio());
-                }
-                int id = author.getId();
-                int rowsUpdated = authorRepo.updateAuthor(id, author);
-                if (rowsUpdated > 0) {
-                    return new ResponseEntity<>("Author was updated successfully", HttpStatus.OK);
-                } else {
-                    return new ResponseEntity<>("Failed to update user", HttpStatus.INTERNAL_SERVER_ERROR);
-                }
-            }
-            return new ResponseEntity<>("Author not found", HttpStatus.NOT_FOUND);
-        } catch (Exception e) {
-            System.out.println(e);
-            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+
+        Author author = authorRepo.findAuthorByName(firstname, lastname);
+
+        if (author == null) {
+            return ResponseEntity.noContent().build();
         }
+        if (updatedAuthor.getFirstName() != null) {
+            author.setFirstName(updatedAuthor.getFirstName());
+        }
+        if (updatedAuthor.getLastName() != null) {
+            author.setLastName(updatedAuthor.getLastName());
+        }
+        if (updatedAuthor.getBio() != null) {
+            author.setBio(updatedAuthor.getBio());
+        }
+
+        int id = author.getId();
+        int rowsUpdated = authorRepo.updateAuthor(id, author);
+
+        if (rowsUpdated > 0) {
+            return ResponseEntity.ok(author);
+        } else {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(null);
+        }
+
     }
 
 }

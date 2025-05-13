@@ -2,7 +2,6 @@ package org.geektext.model;
 
 import java.util.HashSet;
 import java.util.Set;
-
 import jakarta.persistence.*;
 
 @Entity
@@ -10,7 +9,7 @@ import jakarta.persistence.*;
 public class Author {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int authorId;
+    private int id;
 
     @Column(name = "first_name", nullable = false)
     private String firstName;
@@ -27,8 +26,9 @@ public class Author {
     public Author() {
     }
 
-    public Author(String firstName, String lastName, String bio, String publisher) {
+    public Author(int id, String firstName, String lastName, String bio, String publisher) {
 
+        this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
         this.bio = bio;
@@ -37,7 +37,7 @@ public class Author {
     }
 
     public int getId() {
-        return authorId;
+        return id;
     }
 
     public String getFirstName() {
@@ -70,6 +70,11 @@ public class Author {
 
     public void setBio(String bio) {
         this.bio = bio;
+    }
+
+    public void addBook(Book book) {
+        this.books.add(book);
+        book.setAuthor(this);
     }
 
 }

@@ -19,17 +19,22 @@ public class AuthorService implements AuthorRepository {
     @Autowired
     private JdbcTemplate jdbcTemplate;
 
-    public void addAuthor(Author author) {
-        jdbcTemplate.update("INSERT INTO author (authorId, first_name, last_name, bio, publisher) VALUES (?,?,?,?,?)",
-                author.getId(), author.getBio(), author.getFirstName(), author.getLastName(), author.getPublisher());
+    public Author addAuthor(Author author) {
+        jdbcTemplate.update("INSERT INTO authors (id, first_name, last_name, bio, publisher) VALUES (?,?,?,?,?)",
+                author.getId(), author.getFirstName(), author.getLastName(), author.getBio(), author.getPublisher());
+
+        return author;
     }
 
     public List<Author> listAllAuthors() {
-        return jdbcTemplate.query("SELECT * FROM authors", (rs, rosNum) -> new Author(
-                rs.getString("first_name"),
-                rs.getString("last_name"),
-                rs.getString("bio"),
-                rs.getString("publisher")));
+        return jdbcTemplate.query("SELECT * FROM authors", (rs, rosNum) -> {
+            return new Author(
+                    rs.getInt("id"),
+                    rs.getString("first_name"),
+                    rs.getString("last_name"),
+                    rs.getString("bio"),
+                    rs.getString("publisher"));
+        });
     }
 
     @Override
@@ -38,14 +43,14 @@ public class AuthorService implements AuthorRepository {
     }
 
     @Override
-    public Author selectAuthorByName(String firstName, String lastName) {
+    public Author findAuthorByName(String firstName, String lastName) {
         try {
             String str = "SELECT * FROM authors WHERE first_name = ? AND last_name = ?";
             return jdbcTemplate.queryForObject(str, (rs, rosNum) -> new Author(
+                    rs.getInt("id"),
                     rs.getString("first_name"),
                     rs.getString("last_name"),
                     rs.getString("bio"),
-
                     rs.getString("publisher")), new Object[] { firstName, lastName });
         } catch (IncorrectResultSizeDataAccessException e) {
             return null;
@@ -54,27 +59,28 @@ public class AuthorService implements AuthorRepository {
 
     @Override
     public int deleteAuthorById(int id) {
-        return jdbcTemplate.update("DELETE FROM authors WHERE authorId = ? ", id);
+        return jdbcTemplate.update("DELETE FROM authors WHERE id = ? ", id);
     }
 
     @Transactional
     @Override
-    public int updateAuthor(int authorId, Author updatedAuthor) {
+    public int updateAuthor(int id, Author updatedAuthor) {
         return jdbcTemplate.update(
-                "UPDATE author SET first_name = ?, last_name = ?, bio = ?, publisher = ? WHERE id = ?",
+                "UPDATE authors SET first_name = ?, last_name = ?, bio = ?, publisher = ? WHERE id = ?",
                 updatedAuthor.getFirstName(), updatedAuthor.getLastName(), updatedAuthor.getBio(),
-                updatedAuthor.getPublisher(), authorId);
+                updatedAuthor.getPublisher(), id);
     }
 
     @Override
-    public Author findAuthorById(int authorId) {
+    public Author findAuthorById(int id) {
         try {
-            String str = "SELECT * FROM authors WHERE authorId = ?";
+            String str = "SELECT * FROM authors WHERE id = ?";
             return jdbcTemplate.queryForObject(str, (rs, rosNum) -> new Author(
+                    rs.getInt("id"),
                     rs.getString("first_name"),
                     rs.getString("last_name"),
                     rs.getString("bio"),
-                    rs.getString("publisher")), new Object[] { authorId });
+                    rs.getString("publisher")), new Object[] { id });
         } catch (IncorrectResultSizeDataAccessException e) {
             return null;
         }

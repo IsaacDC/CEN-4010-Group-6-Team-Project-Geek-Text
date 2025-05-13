@@ -4,7 +4,6 @@ import org.geektext.model.User;
 import org.geektext.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
-import org.springframework.dao.IncorrectResultSizeDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -20,11 +19,13 @@ public class UserService implements UserRepository {
 
     private BCryptPasswordEncoder encoder = new BCryptPasswordEncoder(12);
 
-    public void insertUser(User user) {
+    public User insertUser(User user) {
         String hashedPassword = encoder.encode(user.getPassword());
         user.setPassword(hashedPassword);
         jdbcTemplate.update("INSERT INTO users (id, address, fullname, password, username) VALUES (?,?,?,?,?)",
                 user.getId(), user.getAddress(), user.getFullname(), user.getPassword(), user.getUsername());
+
+        return user;
     }
 
     @Override
@@ -37,7 +38,7 @@ public class UserService implements UserRepository {
             return encoder.matches(password, storedPassword);
 
         } catch (EmptyResultDataAccessException e) {
-            System.out.println("User not found" + e);
+            System.out.println("Authentication Failed" + e);
             return false;
         }
 
@@ -53,16 +54,14 @@ public class UserService implements UserRepository {
 
     @Override
     public User findUserByUsername(String username) {
-        try {
             String str = "SELECT * FROM users WHERE username = ?";
-            return jdbcTemplate.queryForObject(str, (rs, rosNum) -> new User(rs.getInt("id"),
+            return jdbcTemplate.queryForObject(str, (rs, rosNum) -> new User(
+                    rs.getInt("id"),
                     rs.getString("address"),
                     rs.getString("fullname"),
                     rs.getString("password"),
-                    rs.getString("username")), new Object[] { username });
-        } catch (IncorrectResultSizeDataAccessException e) {
-            return null;
-        }
+                    rs.getString("username")), username);
+
     }
 
     @Override

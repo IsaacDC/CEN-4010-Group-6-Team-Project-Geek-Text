@@ -8,7 +8,7 @@ public class Book {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int bookId;
+    private int id;
 
     @Column(name = "isbn", nullable = false)
     private long isbn;
@@ -38,10 +38,11 @@ public class Book {
     public Book() {
     }
 
-    public Book(String title, Author author, String genre, String description, int yearPublished,
+    public Book(int id, String title, Author author, String genre, String description, int yearPublished,
             int copiesSold,
             long isbn, double price) {
 
+        this.id = id;
         this.title = title;
         this.author = author;
         this.genre = genre;
@@ -53,8 +54,8 @@ public class Book {
 
     }
 
-    public int getBookId() {
-        return bookId;
+    public int getId() {
+        return id;
     }
 
     public String getTitle() {
@@ -87,5 +88,9 @@ public class Book {
 
     public int getCopiesSold() {
         return copiesSold;
+    }
+
+    public void setAuthor(Author author) {
+        this.author = author;
     }
 }

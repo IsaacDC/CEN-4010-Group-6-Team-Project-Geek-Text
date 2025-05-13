@@ -1,7 +1,6 @@
 package org.geektext.exception;
 
 import java.time.LocalDateTime;
-import java.util.HashMap;
 
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.http.HttpStatus;
@@ -26,7 +25,8 @@ public class GlobalExceptionHandler {
 
         ErrorDetails errorDetails = new ErrorDetails(LocalDateTime.now(), exception.getMessage(), null,
                 "INTERNAL_SERVER_ERROR");
-                
+
+        System.err.println("ERROR: " + errorDetails);
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorDetails);
     }
 

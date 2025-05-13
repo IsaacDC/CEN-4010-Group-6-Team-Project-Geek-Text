@@ -1,6 +1,5 @@
 package org.geektext.controller;
 
-import org.geektext.repository.CreditCardRepository;
 import org.geektext.service.CreditCardService;
 import org.geektext.service.UserService;
 import org.geektext.model.CreditCard;
@@ -10,37 +9,32 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-@RequestMapping("/api")
+@RequestMapping("/api/creditcard")
 @RestController
 public class CreditCardController {
 
     @Autowired
-    CreditCardRepository creditCardRepo;
+    CreditCardService creditCardService;
     @Autowired
     UserService userService;
 
     public CreditCardController(CreditCardService creditCardService, UserService userService) {
         this.userService = userService;
-        this.creditCardRepo = creditCardService;
+        this.creditCardService = creditCardService;
     }
 
     @PostMapping("/{username}/addcreditcard")
-    public ResponseEntity<String> insertCreditCard(@PathVariable String username,
+    public ResponseEntity<CreditCard> insertCreditCard(@PathVariable String username,
             @RequestBody CreditCard card) {
-        try {
 
-            User user = userService.findUserByUsername(username);
+        User user = userService.findUserByUsername(username);
 
-            if (user == null) {
-                return new ResponseEntity<>("User not found", HttpStatus.NOT_FOUND);
-            }
-
-            card.setUser(user);
-            creditCardRepo.insertCard(new CreditCard(card.getCardNumber(), card.getCvv(), card.getExpDate(), user));
-            return ResponseEntity.status(HttpStatus.CREATED).body("CreditCard was created successfully");
-        } catch (Exception e) {
-            System.out.println(e);
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+        if (user == null) {
+            return ResponseEntity.notFound().build();
         }
+
+        card.setUser(user);
+        creditCardService.insertCard(card);
+        return ResponseEntity.status(HttpStatus.CREATED).body(card);
     }
 }

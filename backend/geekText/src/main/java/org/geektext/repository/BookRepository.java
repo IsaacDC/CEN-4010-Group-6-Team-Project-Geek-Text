@@ -9,7 +9,7 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface BookRepository {
-    void addBook(Book book);
+    Book addBook(Book book);
 
     List<Book> getAllBooks();
 

@@ -1,37 +1,48 @@
 package org.geektext.controller;
 
+import org.geektext.model.Book;
 import org.geektext.model.Comment;
+import org.geektext.model.User;
+import org.geektext.service.BookService;
 import org.geektext.service.CommentService;
+import org.geektext.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
+//TODO (COMMENT FEATURE)
+
 @RestController
-@RequestMapping("/comments")
+@RequestMapping("/api/comment")
 public class CommentController {
 
     @Autowired
     private CommentService commentService;
+    @Autowired
+    private BookService bookService;
+    @Autowired
+    private UserService userService;
 
-    @PostMapping("/comments")
-    public ResponseEntity<String> addComment(@RequestBody Comment commentRequest) {
-        try {
-            Comment comment = new Comment(
-                    commentRequest.getBookIsbn(),
-                    commentRequest.getUserId(),
-                    commentRequest.getComment(),
-                    commentRequest.getDateTime());
+    @PostMapping("/{isbn}/{username}/addcomment")
+    public ResponseEntity<Comment> addComment(@PathVariable("isbn") long isbn,
+            @PathVariable("username") String username, @RequestBody Comment comment) {
+        Book book = bookService.getBookByIsbn(isbn);
+        User user = userService.findUserByUsername(username);
 
-            // Add the comment via the service
-            commentService.createComment(comment);
-
-            return new ResponseEntity<>(null, HttpStatus.CREATED);
-        } catch (Exception e) {
-            System.out.println(e);
-            return ResponseEntity.status(500).body("Failed to add comment.");
+        if (book == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
         }
+        if (user == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+        }
+        comment.setBook(book);
+        comment.setUser(user);
+        commentService.createComment(comment);
+
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(comment);
     }
 
     @GetMapping("/{isbn}/comments")

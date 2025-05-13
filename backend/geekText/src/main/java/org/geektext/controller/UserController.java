@@ -1,6 +1,5 @@
 package org.geektext.controller;
 
-import java.util.HashMap;
 import java.util.Map;
 import java.util.List;
 
@@ -11,52 +10,51 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-@RequestMapping("/api")
+@RequestMapping("/api/user")
 @RestController
 public class UserController {
 
     @Autowired
     UserRepository userRepo;
 
-    @PostMapping("/user/add")
-    public ResponseEntity<Map<String, String>> addUser(@RequestBody User user) {
-        userRepo.insertUser(new User(user.getId(), user.getAddress(), user.getFullname(), user.getPassword(),
-                user.getUsername()));
+    @PostMapping("/add")
+    public ResponseEntity<User> addUser(@RequestBody User user) {
+        User createdUser = userRepo.insertUser(user);
 
-        Map<String, String> response = new HashMap<String, String>();
-        response.put("message", "USER CREATED SUCCESSFULLY");
-        return ResponseEntity.status(HttpStatus.CREATED).body(response);
+        return ResponseEntity.status(HttpStatus.CREATED).body(createdUser);
     }
 
-    @PostMapping("/user/verify")
-    public ResponseEntity<Map<String, Object>> verifyUser(@RequestBody Map<String, String> credentials) {
+    @PostMapping("/verify")
+    public ResponseEntity<Void> verifyUser(@RequestBody Map<String, String> credentials) {
         String username = credentials.get("username");
         String password = credentials.get("password");
 
-        boolean isPasswordCorrect = userRepo.verifyUser(username, password);
+        if (username == null || username.isEmpty() || password == null || password.isEmpty()) {
+            return ResponseEntity.badRequest().build();
+        }
+        try {
+            boolean isAuthenticated = userRepo.verifyUser(username, password);
 
-        Map<String, Object> response = new HashMap<>();
-        response.put("verification success", isPasswordCorrect);
-        response.put("message", isPasswordCorrect ? "Login successful" : "Invalid username or password");
-
-        return ResponseEntity.status(isPasswordCorrect ? HttpStatus.OK : HttpStatus.UNAUTHORIZED).body(response);
+            if (isAuthenticated) {
+                return ResponseEntity.ok().build();
+            } else {
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+            }
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
     }
 
-    @GetMapping("/user/list")
-    public ResponseEntity<List<User>> getAllUsers(@RequestParam(required = false) String username) {
-        try {
+    @GetMapping("/list")
+    public ResponseEntity<List<User>> getAllUsers() {
 
-            List<User> users = userRepo.findAllUsers();
+        List<User> users = userRepo.findAllUsers();
 
-            if (users.isEmpty())
-                return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        if (users.isEmpty())
+            return ResponseEntity.noContent().build();
 
-            return new ResponseEntity<>(users, HttpStatus.OK);
+        return ResponseEntity.ok(users);
 
-        } catch (Exception e) {
-            System.out.println(e);
-            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
-        }
     }
 
     @GetMapping("/{username}")
@@ -70,45 +68,39 @@ public class UserController {
         }
     }
 
-    @DeleteMapping("/delete{id}")
+    @DeleteMapping("/delete/{id}")
     public ResponseEntity<Void> deleteUserById(@PathVariable int id) {
-        try {
-            userRepo.deleteUserById(id);
-            return new ResponseEntity<>(HttpStatus.OK);
+        userRepo.deleteUserById(id);
+        return ResponseEntity.noContent().build();
 
-        } catch (Exception e) {
-            System.out.println(e);
-            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
-        }
     }
 
-    @PutMapping("/{username}/update")
+    @PutMapping("/update/{username}")
     public ResponseEntity<Void> updateUser(@PathVariable String username,
             @RequestBody User updatedUser) {
-        try {
-            User user = userRepo.findUserByUsername(username);
-            if (user != null) {
-                if (updatedUser.getAddress() != null) {
-                    user.setAddress(updatedUser.getAddress());
-                }
-                if (updatedUser.getFullname() != null) {
-                    user.setFullname(updatedUser.getFullname());
-                }
-                if (updatedUser.getPassword() != null) {
-                    user.setPassword(updatedUser.getPassword());
-                }
 
-                int rowsUpdated = userRepo.updateUser(username, user);
-                if (rowsUpdated > 0) {
-                    return new ResponseEntity<>(HttpStatus.OK);
-                } else {
-                    return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-                }
-            }
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        } catch (Exception e) {
-            System.out.println(e);
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        User user = userRepo.findUserByUsername(username);
+
+        if (user == null) {
+            return ResponseEntity.noContent().build();
         }
+
+        if (updatedUser.getAddress() != null) {
+            user.setAddress(updatedUser.getAddress());
+        }
+        if (updatedUser.getFullname() != null) {
+            user.setFullname(updatedUser.getFullname());
+        }
+        if (updatedUser.getPassword() != null) {
+            user.setPassword(updatedUser.getPassword());
+        }
+
+        int rowsUpdated = userRepo.updateUser(username, user);
+        if (rowsUpdated > 0) {
+            return ResponseEntity.ok().build();
+        } else {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+
     }
 }

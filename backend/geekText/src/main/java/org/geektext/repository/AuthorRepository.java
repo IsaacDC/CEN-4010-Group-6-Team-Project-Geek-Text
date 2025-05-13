@@ -8,13 +8,13 @@ import java.util.List;
 @Repository
 public interface AuthorRepository {
 
-        void addAuthor(Author author);
+        Author addAuthor(Author author);
 
         List<Author> listAllAuthors();
 
         int getAuthorIdByName(String firstName, String lastName);
 
-        Author selectAuthorByName(String firstName, String lastName);
+        Author findAuthorByName(String firstName, String lastName);
 
         int deleteAuthorById(int id);
 

@@ -5,7 +5,6 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface CreditCardRepository {
 
-    void insertCard(CreditCard card);
+    CreditCard insertCard(CreditCard card);
 
-    void insertCard(CreditCard card, int userId);
 }
