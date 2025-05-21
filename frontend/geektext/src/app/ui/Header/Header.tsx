@@ -1,12 +1,10 @@
 import Link from "next/link";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCartShopping } from "@fortawesome/free-solid-svg-icons";
 
 export default function Header() {
   return (
-    <header className="bg-green-800 text-white sticky top-0 flex-wrap z-[20] mx-auto flex w-full items-center justify-between border-b border-gray-500 p-8">
+    <header className="bg-green-800 text-white sticky top-0 flex-wrap z-[20] mx-auto flex w-full items-center justify-between border-b border-gray-500 p-5">
       <div className="logo">
-        <a href="#">Geek Text</a>
+        <Link href="/">Geek Text</Link>
       </div>
       <form className="max-wd mx-auto">
         <label
@@ -26,9 +24,9 @@ export default function Header() {
             >
               <path
                 stroke="currentColor"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth="2"
                 d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z"
               />
             </svg>
@@ -45,7 +43,10 @@ export default function Header() {
       </form>
       <div className="flex gap-5 justify-end">
         <div className="md:flex justify-between">
-          <Link href="/?mode=signup">Signup</Link>
+          <Link href="/createbook">Create Book</Link>
+        </div>
+        <div className="md:flex justify-between">
+          <Link href="/userauth">Signup</Link>
         </div>
       </div>
     </header>

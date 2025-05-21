@@ -1,7 +1,9 @@
 import React, { useState } from "react";
 import { useSearchParams } from "react-router-dom";
-import LogInCard from "../components/UserAuth/LogInCard";
-import SignUpCard from "../components/UserAuth/SignUpCard";
+import LogInCard from "./UserAuth/LogInCard";
+import SignUpCard from "./UserAuth/SignUpCard";
+
+
 const AuthPage = () => {
   const [searchParams] = useSearchParams();
   const mode = searchParams.get("mode") === "signup" ? false : true;

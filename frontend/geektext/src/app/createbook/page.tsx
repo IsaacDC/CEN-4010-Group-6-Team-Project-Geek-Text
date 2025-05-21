@@ -2,26 +2,22 @@
 
 import FormInput from "../ui/FormInput";
 import { useState } from "react";
+import { Book } from "../types/book";
 
-type FormData = {
-  title: string;
-  author: string;
-  genre: string;
-  description: string;
-  yearPublished: Number;
-  isbn: Number;
-  price: Number;
-};
 
 export default function CreateBook() {
-  const [formData, setFormData] = useState<FormData>({
+  const [formData, setFormData] = useState<Book>({
     title: "",
-    author: "",
+    author: {
+      firstName: "",
+      lastName: "",
+    },
     genre: "",
     description: "",
     yearPublished: 0,
     isbn: 0,
     price: 0,
+    copiesSold: 0,
   });
 
   const [loading, setLoading] = useState(false);
@@ -29,7 +25,19 @@ export default function CreateBook() {
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
+
+    if (name.includes(".")) {
+      const [parent, child] = name.split(".");
+      setFormData((prev) => ({
+        ...prev,
+        [parent]: {
+          ...(prev as any)[parent],
+          [child]: value,
+        },
+      }));
+    } else {
+      setFormData((prev) => ({ ...prev, [name]: value }));
+    }
   };
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -38,7 +46,7 @@ export default function CreateBook() {
     setError(null);
 
     try {
-      const response = await fetch("http://localhost:8080/api/books/create", {
+      const response = await fetch("http://localhost:8080/api/book/add", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -51,12 +59,16 @@ export default function CreateBook() {
       alert("Book created successfully!");
       setFormData({
         title: "",
-        author: "",
+        author: {
+          firstName: "",
+          lastName: "",
+        },
         genre: "",
         description: "",
         yearPublished: 0,
         isbn: 0,
         price: 0,
+        copiesSold: 0,
       });
     } catch (err: any) {
       console.error(err.message || "Something went wrong");
@@ -67,8 +79,8 @@ export default function CreateBook() {
   };
 
   return (
-    <div className="flex flex-col items-center justify-center px-6 py-8 mx-auto md:h-screen lg:py-0">
-      <div className="w-full rounded-lg shadow md:mt-0 sm:max-w-md xl:p-0 bg-white">
+    <div className="bg-green-500 flex flex-col items-center justify-center md:h-screen">
+      <div className="w-full p-5 rounded-lg shadow sm:max-w-md bg-white">
         <a
           className="flex items-center mb-6 text-2xl font-semibold"
           style={{ color: "var(--dark-green)" }}
@@ -83,16 +95,25 @@ export default function CreateBook() {
             inputName="title"
             value={formData.title}
             onChange={handleChange}
-            placeholder=""
+            placeholder="Journey to the Center of the Earth"
           />
           <FormInput
-            htmlFor="author"
-            header="Author"
+            htmlFor="authorFirstName"
+            header="Author First Name"
             inputType="text"
-            inputName="author"
-            value={formData.author}
+            inputName="author.firstName"
+            value={formData.author.firstName}
             onChange={handleChange}
-            placeholder=""
+            placeholder="Jules"
+          />
+          <FormInput
+            htmlFor="authorLastName"
+            header="Author Last Name"
+            inputType="text"
+            inputName="author.lastName"
+            value={formData.author.lastName}
+            onChange={handleChange}
+            placeholder="Verne"
           />
           <FormInput
             htmlFor="genre"
@@ -101,7 +122,7 @@ export default function CreateBook() {
             inputName="genre"
             value={formData.genre}
             onChange={handleChange}
-            placeholder=""
+            placeholder="Science Fiction"
           />
           <FormInput
             htmlFor="description"
@@ -124,7 +145,7 @@ export default function CreateBook() {
           <FormInput
             htmlFor="isbn"
             header="ISBN"
-            inputType="text"
+            inputType="number"
             inputName="isbn"
             value={formData.isbn}
             onChange={handleChange}
@@ -139,10 +160,19 @@ export default function CreateBook() {
             onChange={handleChange}
             placeholder=""
           />
+          <FormInput
+            htmlFor="copiesSold"
+            header="Copies Sold"
+            inputType="number"
+            inputName="copiesSold"
+            value={formData.copiesSold}
+            onChange={handleChange}
+            placeholder=""
+          />
           <button
             type="submit"
             disabled={loading}
-            className="w-full hover:bg-primary-700 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center"
+            className="w-full mt-5 hover:bg-primary-700 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center"
             style={{
               color: "var(--secondary-color)",
               backgroundColor: "var(--dark-green)",

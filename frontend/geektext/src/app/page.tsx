@@ -1,32 +1,21 @@
 // app/page.tsx or app/home/page.tsx
-import Header from "@/app/ui/Header/Header";
 import BookCard from "@/app/ui/Books/BookCard";
+import { Book } from "@/app/types/book";
 
-type Book = {
-  id: number;
-  title: string;
-  author: {
-    firstName: string;
-    lastName: string;
-  };
-  description: string;
-  isbn: number;
-  coverImage: string;
-};
 
-const endpoint = "http://localhost:8080/api/books/all";
+const endpoint = "http://localhost:8080/api/book/list";
 
 export default async function Home() {
   const res = await fetch(endpoint, {
     cache: "no-store",
   });
+
   const books: Book[] = await res.json();
 
   return (
     <>
-      <Header />
-      <section className="flex gap-5 flex-wrap justify-center">
-        {books.map((book) => (
+      <section className="flex gap-5 flex-wrap justify-center m-5">
+        {books && books.map((book) => (
           <BookCard
             key={book.isbn}
             title={book.title}
